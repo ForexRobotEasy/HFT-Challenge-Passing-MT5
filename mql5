@@ -1,0 +1,69 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                               HFT Challenge Passing MT5|
+//|                                 Copyright © 2022, Forex Robot Easy Team|
+//|                                            https://www.forexroboteasy.com|
+//+------------------------------------------------------------------+
+
+// Define global variables
+int ticket = 0; // Order ticket number
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Add necessary initialization code here
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Add necessary deinitialization code here
+}
+
+//+------------------------------------------------------------------+
+//| Expert tick function                                             |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Check for pending orders
+    if (ticket == 0)
+    {
+        // Check if price crosses the indicated levels
+        if (Bid > 1.2000)
+        {
+            // Buy when price crosses above 1.2000
+            ticket = OrderSend(Symbol(), OP_BUY, 0.01, Bid, 3, 0, 0, 'Buy Order', 0, 0, clrGreen);
+        }
+        else if (Ask < 1.1900)
+        {
+            // Sell when price crosses below 1.1900
+            ticket = OrderSend(Symbol(), OP_SELL, 0.01, Ask, 3, 0, 0, 'Sell Order', 0, 0, clrRed);
+        }
+    }
+    else
+    {
+        // Check if the pending order has been filled
+        if (OrderSelect(ticket, SELECT_BY_TICKET))
+        {
+            if (OrderCloseTime() != 0)
+            {
+                // Reset the ticket number
+                ticket = 0;
+            }
+        }
+    }
+}
+
+//+------------------------------------------------------------------+
+//| Expert start function                                            |
+//+------------------------------------------------------------------+
+void OnStart()
+{
+    // Add necessary start function code here
+}
